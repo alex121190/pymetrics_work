@@ -4,8 +4,9 @@ from time import sleep
 
 # init driver
 driver = webdriver.Chrome(executable_path='/Users/alexlapkouski/Drivers/chromedriver')
+# executable_path='/Users/alexlapkouski/Drivers/chromedriver'
+# export PATH="${PATH}:/Users/alexlapkouski/Drivers/"
 driver.maximize_window()
-# driver.implicitly_wait(10)
 
 # open the url
 driver.get('https://www.staging.pymetrics.com/c/p/candidates')
@@ -46,6 +47,7 @@ while index < len(checkboxes):
     text1 = driver.find_element(By.XPATH,
                                 "//a[@class='_2KIninGfXsD6cdf3q8JMh FkFyqEJe1OWSPqqHhdFNP _3R-oI7bxnSARfvf2PltvFp']/p").text
     print(text1)
+    assert needed_text == text1
     # assert len(status) == 25, f'Expected 25, but got {len(status)}'
     # status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL ')
     filter_button.click()
