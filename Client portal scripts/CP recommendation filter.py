@@ -3,9 +3,8 @@ from selenium.webdriver.common.by import By
 from time import sleep
 
 # init driver
-driver = webdriver.Chrome(executable_path='/Users/alexlapkouski/Drivers/chromedriver')
+driver = webdriver.Chrome()
 driver.maximize_window()
-# driver.implicitly_wait(10)
 
 # open the url
 driver.get('https://www.staging.pymetrics.com/c/p/candidates')
@@ -22,7 +21,6 @@ password.send_keys('6428531_Vbycr')
 driver.find_element(By.XPATH, '//button[@name="login"]').click()
 sleep(5)
 
-
 # Go to candidates page
 # driver.find_element(By.XPATH, '//a[@title="Candidates"]').click()
 
@@ -33,22 +31,37 @@ filter_button.click()
 checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div '
                                                  '> div[data-for] input[type=checkbox]')
 
+checkboxes_text = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div > div[data-for]')
+
 index = 0
+
 while index < len(checkboxes):
     checkbox = checkboxes[index]
+    # while index < len(checkboxes_text)
+    checkbox_text = checkboxes_text[index]
+    needed_text = checkbox_text.get_attribute('data-for')
+    print(needed_text)
     checkbox.click()
     driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
-    sleep(3)
-    status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL ')
-    # to do a loop for statuses
-    text1 = driver.find_element(By.XPATH, "//a[@class='_2KIninGfXsD6cdf3q8JMh FkFyqEJe1OWSPqqHhdFNP _3R-oI7bxnSARfvf2PltvFp']/p")
-    print(text1.text)
+    sleep(2)
+    recommendation = driver.find_elements(By.XPATH,
+                                 "//a[@class='_2KIninGfXsD6cdf3q8JMh FkFyqEJe1OWSPqqHhdFNP _1tk8whJL7PwA2eRWcRV9-7']")
+    if len(recommendation) > 0:
+        for status in recommendation:
+            assert status.text == needed_text, f'Expected {needed_text} but got {status.text}'
+    else:
+        print("Empty")
     # assert len(status) == 25, f'Expected 25, but got {len(status)}'
+    # status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL ')
     filter_button.click()
-    sleep(3)
+    sleep(2)
     checkboxes = driver.find_elements(By.CSS_SELECTOR,
                                       '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div '
                                       '> div[data-for] input[type=checkbox]')
+    checkboxes_text = driver.find_elements(By.CSS_SELECTOR,
+                                          '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div > div[data-for]')
+    checkbox_text = checkboxes_text[index]
+    needed_text = checkbox_text.get_attribute('data-for')
     checkbox = checkboxes[index]
     checkbox.click()
     index += 1

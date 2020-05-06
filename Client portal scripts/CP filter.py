@@ -3,9 +3,7 @@ from selenium.webdriver.common.by import By
 from time import sleep
 
 # init driver
-driver = webdriver.Chrome(executable_path='/Users/alexlapkouski/Drivers/chromedriver')
-# executable_path='/Users/alexlapkouski/Drivers/chromedriver'
-# export PATH="${PATH}:/Users/alexlapkouski/Drivers/"
+driver = webdriver.Chrome()
 driver.maximize_window()
 
 # open the url
