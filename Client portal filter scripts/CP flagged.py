@@ -24,3 +24,19 @@ sleep(5)
 # Click Filters button
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
 filter_button.click()
+
+checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(7) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
+checkboxes[0].click()
+driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
+sleep(2)
+status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL')
+
+flag = driver.find_elements(By.CSS_SELECTOR, 'g[fill="#333333"]')
+
+if len(status) > 0:
+    for stat in status:
+        assert len(status) == len(flag)
+else:
+    print("Empty")
+
+driver.quit()
