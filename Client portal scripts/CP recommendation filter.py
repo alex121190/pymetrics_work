@@ -21,9 +21,6 @@ password.send_keys('6428531_Vbycr')
 driver.find_element(By.XPATH, '//button[@name="login"]').click()
 sleep(5)
 
-# Go to candidates page
-# driver.find_element(By.XPATH, '//a[@title="Candidates"]').click()
-
 # Click Filters button
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
 filter_button.click()
@@ -51,8 +48,6 @@ while index < len(checkboxes):
             assert status.text == needed_text, f'Expected {needed_text} but got {status.text}'
     else:
         print("Empty")
-    # assert len(status) == 25, f'Expected 25, but got {len(status)}'
-    # status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL ')
     filter_button.click()
     sleep(2)
     checkboxes = driver.find_elements(By.CSS_SELECTOR,
