@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
+from datetime import datetime, date, timedelta
 
 # init driver
 driver = webdriver.Chrome()
@@ -25,19 +26,25 @@ sleep(5)
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
 filter_button.click()
 
-checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(7) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
+checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(5) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
 checkboxes[0].click()
 driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
 sleep(2)
 
-status = driver.find_elements(By.CSS_SELECTOR, '._1yU0N8HRUChgPbo5OC6WAL')
-flag = driver.find_elements(By.CSS_SELECTOR, 'g[fill="#333333"]')
-
-# Assert
-if len(status) > 0:
-    for stat in status:
-        assert len(status) == len(flag)
+# Getting selectors we need
+invited_date = driver.find_elements(By. XPATH, './/span[@class = "_2trKg8mIZJBgE5H5qh-UFJ"]')
+needed_info = invited_date[0:len(invited_date):2]
+index = 0
+if len(needed_info) > 0:
+    while index < len(needed_info):
+        get_date = needed_info[index]
+        date_parsed = datetime.strptime(get_date.text, "%m/%d/%Y")
+        date_difference = datetime.now() - date_parsed
+        assert int(date_difference.days) == 0
+        print(date_difference.days)
+        index += 1
 else:
-    print("Empty")
+    print("No candidates")
+
 
 driver.quit()
