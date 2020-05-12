@@ -24,3 +24,4 @@ sleep(5)
 # Click Filters button
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
 filter_button.click()
+
