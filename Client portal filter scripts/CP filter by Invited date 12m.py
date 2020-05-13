@@ -27,7 +27,7 @@ filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy
 filter_button.click()
 checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(5) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
 checkboxes[3].click()
-driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
+apply_button = driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
 sleep(2)
 
 # Getting selectors we need

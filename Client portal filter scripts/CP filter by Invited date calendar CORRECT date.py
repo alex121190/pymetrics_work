@@ -27,14 +27,27 @@ filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy
 filter_button.click()
 
 # Needed checkbox click
-checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(6) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
-checkboxes[0].click()
+checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(5) > ._3tKwFY9SSNHJkaLR19S-JQ + div input[type=checkbox]')
+checkboxes[4].click()
+dates_input = driver.find_elements(By.CSS_SELECTOR, '.react-datepicker__input-container')
+dates_input[0].click()
+
+needed_date = datetime.now() - timedelta(7)
+needed_date_number = str(needed_date.day)
+calendar_days = driver.find_elements(By.CSS_SELECTOR, '.react-datepicker__day')
+
+# Find a needed day to click
+# Need to double check this loop
+for day in calendar_days:
+    if day.text == needed_date_number:
+        day.click()
+
 apply_button = driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
 sleep(2)
 
-# Getting selectors we need
-completed_date = driver.find_elements(By. XPATH, './/span[@class = "_2trKg8mIZJBgE5H5qh-UFJ"]')
-needed_info = completed_date[1:len(completed_date):2]
+# Assert
+invited_date = driver.find_elements(By. XPATH, './/span[@class = "_2trKg8mIZJBgE5H5qh-UFJ"]')
+needed_info = invited_date[0:len(invited_date):2]
 index = 0
 
 if len(needed_info) > 0:
@@ -42,11 +55,12 @@ if len(needed_info) > 0:
         get_date = needed_info[index]
         date_parsed = datetime.strptime(get_date.text, "%m/%d/%Y")
         date_difference = datetime.now() - date_parsed
-        assert int(date_difference.days) == 0
+        assert int(date_difference.days) <= 7
         print(date_difference.days)
         index += 1
 else:
     print("No candidates")
+
 
 
 driver.quit()
