@@ -23,7 +23,7 @@ sleep(2)
 
 interviews_button = driver.find_elements(By.CSS_SELECTOR, '._1CzUwQfdI5sAtkrdDKRMGu button')
 interviews_button[1].click()
-sleep(3)
+sleep(5)
 
 # Click Filters button
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
@@ -41,9 +41,9 @@ while index < len(checkboxes):
     needed_text = checkbox_text.get_attribute('data-for')
     print(needed_text)
     checkbox.click()
-    filters = driver.find_elements(By.CSS_SELECTOR, '._2YmJUj2HMf2xUn8JxXNUO_')
-    filters[1].click()
-    sleep(5)
+    apply_filters = driver.find_elements(By.CSS_SELECTOR, '._2YmJUj2HMf2xUn8JxXNUO_')
+    apply_filters[1].click()
+    sleep(7)
     text1 = driver.find_elements(By.XPATH,
                                 "//div[@class='_1yU0N8HRUChgPbo5OC6WAL ']/div[@class='_2KIninGfXsD6cdf3q8JMh _1tk8whJL7PwA2eRWcRV9-7 FkFyqEJe1OWSPqqHhdFNP']/div/span")
     if len(text1) > 0:
