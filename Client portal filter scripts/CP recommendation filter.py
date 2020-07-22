@@ -25,40 +25,29 @@ sleep(5)
 filter_button = driver.find_element(By.XPATH, '//button[@class="QV-QATz9F5xIOwsy25LC0 "]')
 filter_button.click()
 
-checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div '
-                                                 '> div[data-for] input[type=checkbox]')
-
-checkboxes_text = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div > div[data-for]')
-
+checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > div > div input[type=checkbox]')
+checkboxes_text = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > div > div[data-for]')
 index = 0
 
 while index < len(checkboxes):
-    checkbox = checkboxes[index]
-    # while index < len(checkboxes_text)
-    checkbox_text = checkboxes_text[index]
-    needed_text = checkbox_text.get_attribute('data-for')
+    needed_text = checkboxes_text[index].get_attribute('data-for')
     print(needed_text)
-    checkbox.click()
-    driver.find_element(By.XPATH, '//div[@class="_2YmJUj2HMf2xUn8JxXNUO_"]/button[@name="applyFilter"]').click()
+    checkboxes[index].click()
+    apply_filters = driver.find_element(By.XPATH, '//button[contains(text(), "Apply Filters")]').click()
     sleep(2)
-    recommendation = driver.find_elements(By.XPATH,
-                                 "//a[@class='_2KIninGfXsD6cdf3q8JMh FkFyqEJe1OWSPqqHhdFNP _1tk8whJL7PwA2eRWcRV9-7']")
-    if len(recommendation) > 0:
-        for status in recommendation:
-            assert status.text == needed_text, f'Expected {needed_text} but got {status.text}'
+    recommendation_text = driver.find_elements(By.XPATH, '//a[5]/div/div/span[text()]')
+    if len(recommendation_text) > 0:
+        for status in recommendation_text:
+            assert status.text == needed_text
     else:
         print("Empty")
     filter_button.click()
     sleep(2)
-    checkboxes = driver.find_elements(By.CSS_SELECTOR,
-                                      '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div '
-                                      '> div[data-for] input[type=checkbox]')
-    checkboxes_text = driver.find_elements(By.CSS_SELECTOR,
-                                          '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > ._3tKwFY9SSNHJkaLR19S-JQ + div > div[data-for]')
-    checkbox_text = checkboxes_text[index]
-    needed_text = checkbox_text.get_attribute('data-for')
+    checkboxes = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > div > div input[type=checkbox]')
+    checkboxes_text = driver.find_elements(By.CSS_SELECTOR, '._2dWgaQKyo0IbW6qgWYL79d:nth-child(2) > div > div[data-for]')
+    needed_text = checkboxes_text[index].get_attribute('data-for')
     checkbox = checkboxes[index]
-    checkbox.click()
+    checkboxes[index].click()
     index += 1
 
 driver.quit()
