@@ -1,0 +1,252 @@
+import pytest
+import time
+
+from tests.ui_tests.pages.login_page import LoginPage
+from tests.ui_tests.pages.client_portal.candidates import Candidates
+from tests.ui_tests.pages.client_portal.dashboard import Dashboard
+from tests.ui_tests.pages.client_portal.filters import Filters
+
+import tests.ui_tests.utils.configs as configs
+
+
+@pytest.mark.cp_admin
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+def test_no_response_cp(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    url = ("/c/p/candidates/assessments/497275/video/1179583/11/"
+           "?current_view=response")
+    driver.navigate_to(configs.url + url)
+    time.sleep(3)  # waiting for client portal to load
+    driver.switch_frame(Candidates.iframe)
+    driver.wait_until_element_visible(Candidates.report_tab)
+    with pytest.raises(Exception) as excinfo:
+        element = driver.find_element_by_css_selector(
+            Candidates.video_player['selector'])
+    unable = 'Unable to locate element'
+    exception = str(excinfo)
+    assert exception.find(unable)
+
+
+@pytest.mark.cp_admin
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+def test_response_report_ats(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    # same interview as above, but ats link
+    url = "/video/evaluation/11/1179583/response"
+    driver.navigate_to(configs.url + url)
+    driver.wait_until_element_visible(Candidates.video_player)
+    driver.click(Candidates.report_tab)
+    driver.wait_until_element_visible(Candidates.download_report)
+
+
+@pytest.mark.cp_admin
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+def test_no_report_cp(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    url = ("/c/p/candidates/assessments/519085/video/1206998/9/"
+           "?current_view=response")
+    driver.navigate_to(configs.url + url)
+    time.sleep(3)  # waiting for client portal to load
+    driver.switch_frame(Candidates.iframe)
+    driver.wait_until_element_visible(Candidates.video_player)
+    with pytest.raises(Exception) as excinfo:
+        element = driver.find_element_by_xpath(
+            Candidates.report_tab['selector']
+        )
+    unable = 'Unable to locate element'
+    exception = str(excinfo)
+    assert exception.find(unable)
+
+
+@pytest.mark.cp_admin
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+def test_nothing_ats(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    # same interview as above, but ats link
+    url = "/video/evaluation/9/1206998/?current_view=response"
+    driver.navigate_to(configs.url + url)
+    message = driver.return_text(Candidates.center_message)
+    assert message == "Currently there is no content to view"
+
+
+@pytest.mark.evaluation_one_to_five
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_evaluation_one_to_five(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    url = ("/c/p/candidates/assessments/495562/video/1178191/9"
+           "/?current_view=response")
+    driver.navigate_to(configs.url + url)
+    time.sleep(3)  # waiting for client portal to load
+    driver.switch_frame(Candidates.iframe)
+    driver.wait_until_element_visible(Candidates.ratings)
+    ratings = driver.return_elements(Candidates.ratings)
+    assert len(ratings) == 5
+
+
+@pytest.mark.candidates_card_update
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_candidate_card_update(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.testorg_logo, delay=20)
+    driver.wait_until_element_visible(Dashboard.high_chart)
+    url = ("/c/p/candidates/assessments/557226/video/1238494/")
+    driver.navigate_to(configs.url + url)
+    driver.wait_until_element_visible(
+        Candidates.evaluators_checkboxes)
+    evaluators = driver.return_elements(
+        Candidates.evaluators_checkboxes)
+    index = 0
+    while index < 3:
+        evaluators[index].click()
+        index += 1
+    driver.click(Candidates.apply_assigned_evaluator)
+    driver.click(Candidates.exit_button)
+    driver.click(Candidates.interviews_tab)
+    driver.wait_until_element_visible(
+        Candidates.status_column)
+    time.sleep(6)
+    # Interviews page needs more time to load properly
+    driver.type_keys(
+        Candidates.candidate_search_field, 'Automation user\n')
+    driver.wait_until_element_visible(
+        Candidates.three_evaluators)
+    driver.click(Candidates.three_evaluators)
+    evaluators = driver.return_elements(
+        Candidates.evaluators_checkboxes)
+    index = 0
+    while index < 3:
+        evaluators[index].click()
+        index += 1
+    driver.click(Candidates.apply_assigned_evaluator)
+    driver.click(Candidates.exit_button)
+    driver.wait_until_element_visible(
+        Candidates.assign_evaluators)
+
+
+@pytest.mark.evaluators_dropdown
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_evaluators_dropdown(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    url = ("/c/p/candidates/assessments/495562/video/1178191/9"
+           "/?current_view=response")
+    driver.navigate_to(configs.url + url)
+    time.sleep(3)  # waiting for client portal to load
+    driver.switch_frame(Candidates.iframe)
+    driver.wait_until_element_visible(Candidates.ratings)
+    driver.click(Candidates.evaluators_dropdown)
+    driver.type_keys(Candidates.search_bar, "Alex")
+    driver.wait_until_element_visible(Candidates.alex_evaluator)
+
+
+@pytest.mark.narrow_modal
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_narrow_modal(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.candidates_button)
+    url = ("/c/p/candidates/assessments/518451/video/1206500/9"
+           "/?current_view=response")
+    driver.navigate_to(configs.url + url)
+    time.sleep(3)  # waiting for client portal to load
+    driver.switch_frame(Candidates.iframe)
+    with pytest.raises(Exception) as excinfo:
+        driver.wait_until_element_visible(Candidates.ratings, delay=3)
+    unable = 'not visible in'
+    exception = str(excinfo)
+    assert exception.find(unable)
+
+
+@pytest.mark.one_assigned
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_one_assigned(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.testorg_logo, delay=20)
+    driver.wait_until_element_visible(Dashboard.high_chart)
+    time.sleep(1)
+    # same interview as above, but ats link
+    url = "/c/p/candidates/assessments/557226/video/1235438/"
+    driver.navigate_to(configs.url + url)
+    evaluators_checkboxes = driver.return_elements(
+        Candidates.evaluators_checkboxes)
+    driver.wait_until_element_visible(Candidates.evaluators_checkboxes)
+    evaluators_checkboxes[5].click()
+    driver.click(Candidates.apply_assigned_evaluator)
+    time.sleep(1)
+    # Need some times to load
+    not_started = driver.return_elements(
+        Candidates.not_started_evaluation)
+    assert len(not_started) == 2
+    evaluators_checkboxes[5].click()
+    driver.click(Candidates.apply_assigned_evaluator)
+
+
+@pytest.mark.two_assigned
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_two_assigned(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Candidates.testorg_logo)
+    driver.wait_until_element_visible(Dashboard.high_chart)
+    # same interview as above, but ats link
+    url = "/c/p/candidates/assessments/561336/video/1241779/"
+    driver.navigate_to(configs.url + url)
+    evaluators_checkboxes = driver.return_elements(
+        Candidates.evaluators_checkboxes)
+    evaluators_checkboxes[2].click()
+    driver.click(Candidates.apply_assigned_evaluator)
+    time.sleep(2)
+    # Need some time to load
+    not_started = driver.return_elements(
+        Candidates.not_started_evaluation)
+    in_progress = driver.return_elements(
+        Candidates.in_progress_evaluation)
+    assert len(not_started) == 2
+    assert len(in_progress) == 1
+    evaluators_checkboxes[2].click()
+    driver.click(Candidates.apply_assigned_evaluator)
+
+
+@pytest.mark.one_completed
+@pytest.mark.client_portal
+@pytest.mark.evaluation_url
+@pytest.mark.regression
+def test_one_completed(driver):
+    LoginPage.login_recruiter(driver, '/c/p')
+    driver.wait_until_element_visible(Dashboard.high_chart)
+    # same interview as above, but ats link
+    url = "/c/p/candidates/assessments/561338/video/1241780"
+    driver.navigate_to(configs.url + url)
+    evaluators_checkboxes = driver.return_elements(
+        Candidates.evaluators_checkboxes)
+    evaluators_checkboxes[2].click()
+    driver.click(Candidates.apply_assigned_evaluator)
+    time.sleep(2)
+    # Need some time to load
+    not_started = driver.return_elements(
+        Candidates.not_started_evaluation)
+    submitted = driver.return_elements(
+        Candidates.submitted_evaluation)
+    assert len(not_started) == 2
+    assert len(submitted) == 1
+    evaluators_checkboxes[2].click()
+    driver.click(Candidates.apply_assigned_evaluator)
